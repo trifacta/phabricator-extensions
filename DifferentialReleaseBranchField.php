@@ -23,6 +23,31 @@ final class DifferentialReleaseBranchField
     return pht('Indicates the intended branch for this revision.');
   }
 
+  /**
+   * @brief See https://secure.phabricator.com/D13612
+   */
+  protected function getHeraldFieldStandardType() {
+    return self::STANDARD_TEXT;
+  }
+
+  public function getHeraldFieldValueType($condition) {
+    return new HeraldTextFieldValue();
+  }
+
+  public function getHeraldFieldConditions() {
+    return array(
+      HeraldAdapter::CONDITION_CONTAINS,
+      HeraldAdapter::CONDITION_NOT_CONTAINS,
+      HeraldAdapter::CONDITION_IS,
+      HeraldAdapter::CONDITION_IS_NOT,
+      HeraldAdapter::CONDITION_REGEXP,
+    );
+  }
+
+  public function shouldAppearInHerald() {
+    return true;
+  }
+
   public function getHeraldFieldValue() {
     return $this->getValue();
   }
@@ -167,20 +192,6 @@ final class DifferentialReleaseBranchField
         ->setLabel($this->getFieldName())
         ->setName($this->getFieldKey())
         ->setValue($value));
-  }
-
-  public function shouldAppearInHerald() {
-    return true;
-  }
-
-  public function getHeraldFieldConditions() {
-    return array(
-      HeraldAdapter::CONDITION_CONTAINS,
-      HeraldAdapter::CONDITION_NOT_CONTAINS,
-      HeraldAdapter::CONDITION_IS,
-      HeraldAdapter::CONDITION_IS_NOT,
-      HeraldAdapter::CONDITION_REGEXP,
-    );
   }
 
   public function readValueFromCommitMessage($value) {
