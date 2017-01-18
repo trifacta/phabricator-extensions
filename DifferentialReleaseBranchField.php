@@ -11,10 +11,6 @@ final class DifferentialReleaseBranchField
     return 'trifacta:release-branch';
   }
 
-  public function getFieldKeyForConduit() {
-    return 'releaseRevision';
-  }
-
   public function getFieldName() {
     return pht('Release Branch');
   }
@@ -73,10 +69,6 @@ final class DifferentialReleaseBranchField
     return true;
   }
 
-  public function shouldAppearInCommitMessageTemplate() {
-    return true;
-  }
-
   public function getOldValueForApplicationTransactions() {
     return $this->getValue();
   }
@@ -121,26 +113,8 @@ final class DifferentialReleaseBranchField
       $xaction->renderHandleLink($object_phid));
   }
 
-  public function shouldAppearInCommitMessage() {
-    return true;
-  }
-
-  public function shouldAllowEditInCommitMessage() {
-    return true;
-  }
-
   public function shouldOverwriteWhenCommitMessageIsEdited() {
     return true;
-  }
-
-  public function getCommitMessageLabels() {
-    return array(
-      'Release Branch'
-    );
-  }
-
-  public function renderCommitMessageValue(array $handles) {
-    return $this->getValue();
   }
 
   public function shouldAppearInConduitDictionary() {
