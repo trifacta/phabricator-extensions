@@ -78,7 +78,7 @@ final class DifferentialReleaseBranchField
   }
 
   public function readValueFromRequest(AphrontRequest $request) {
-    $this->setValue($request->getStr($this->getFieldKey()));
+    return null;
   }
 
   public function renderEditControl(array $handles) {
@@ -113,12 +113,16 @@ final class DifferentialReleaseBranchField
       $xaction->renderHandleLink($object_phid));
   }
 
-  public function shouldOverwriteWhenCommitMessageIsEdited() {
+  public function shouldAppearInConduitDictionary() {
     return true;
   }
 
-  public function shouldAppearInConduitDictionary() {
+  public function shouldAppearInConduitTransactions() {
     return true;
+  }
+
+  protected function newConduitEditParameterType() {
+    return new ConduitStringParameterType();
   }
 
   // Copied from phabricator/src/infrastructure/customfield/standard/PhabricatorStandardCustomFieldText.php

@@ -38,4 +38,21 @@ final class DifferentialReleaseBranchMessageField
   public function getFieldOrder() {
     return 1000000;
   }
+
+  /**
+   * Copied from https://secure.phabricator.com/T12085#207524.
+   */
+  public function readFieldValueFromObject(DifferentialRevision $revision) {
+    $cf = PhabricatorCustomField::getObjectFields(
+               $revision,
+               PhabricatorCustomField::ROLE_STORAGE);
+    $cf->readFieldsFromObject($revision);
+
+    id(new PhabricatorCustomFieldStorageQuery())
+      ->addField(idx($cf->getFields(), $this::FIELDKEY))
+      ->execute();
+
+    return idx($cf->getFields(), $this::FIELDKEY)
+      ->getConduitDictionaryValue();
+  }
 }
