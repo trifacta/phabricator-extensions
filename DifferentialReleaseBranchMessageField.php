@@ -1,12 +1,16 @@
 <?php
 
 final class DifferentialReleaseBranchMessageField
-  extends DifferentialCommitMessageField {
+  extends DifferentialCommitMessageCustomField {
 
   const FIELDKEY = 'releaseRevision';
 
   public function getFieldName() {
     return pht('Release Branch');
+  }
+
+  public function getCustomFieldKey() {
+    return 'trifacta:release-branch';
   }
 
   public function shouldAppearInCommitMessageTemplate() {
@@ -26,4 +30,9 @@ final class DifferentialReleaseBranchMessageField
   public function isFieldEditable() {
     return true;
   }
+
+  public function isTemplateField() {
+    return true;
+  }
+
 }
