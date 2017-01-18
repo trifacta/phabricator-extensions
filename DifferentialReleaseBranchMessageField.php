@@ -35,4 +35,7 @@ final class DifferentialReleaseBranchMessageField
     return true;
   }
 
+  public function getFieldOrder() {
+    return 1000000;
+  }
 }
