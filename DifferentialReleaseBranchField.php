@@ -23,10 +23,7 @@ final class DifferentialReleaseBranchField
     return pht('Indicates the intended branch for this revision.');
   }
 
-  /**
-   * @brief See https://secure.phabricator.com/D13612
-   */
-  protected function getHeraldFieldStandardType() {
+  public function getHeraldFieldStandardType() {
     return self::STANDARD_TEXT;
   }
 
