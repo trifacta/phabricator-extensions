@@ -3,10 +3,6 @@
 final class DifferentialReleaseBranchField
   extends DifferentialStoredCustomField {
 
-  public function getFieldType() {
-    return 'text';
-  }
-
   public function getFieldKey() {
     return 'trifacta:release-branch';
   }
@@ -20,7 +16,7 @@ final class DifferentialReleaseBranchField
   }
 
   public function getHeraldFieldStandardType() {
-    return self::STANDARD_TEXT;
+    return 'standard.text';
   }
 
   public function getHeraldFieldValueType($condition) {
@@ -58,11 +54,11 @@ final class DifferentialReleaseBranchField
   }
 
   public function renderPropertyViewValue(array $handles) {
-    return $this->getValue();
-  }
+    if (!strlen($this->getValue())) {
+      return null;
+    }
 
-  public function shouldAppearInEditView() {
-    return true;
+    return $this->getValue();
   }
 
   public function shouldAppearInApplicationTransactions() {
@@ -77,8 +73,8 @@ final class DifferentialReleaseBranchField
     return $this->getValue();
   }
 
-  public function readValueFromRequest(AphrontRequest $request) {
-    return null;
+  public function shouldAppearInEditView() {
+    return true;
   }
 
   public function renderEditControl(array $handles) {
@@ -88,6 +84,10 @@ final class DifferentialReleaseBranchField
       ->setLabel($this->getFieldName());
   }
 
+  public function readValueFromRequest(AphrontRequest $request) {
+    $this->setValue($request->getStr($this->getFieldKey()));
+  }
+
   public function getApplicationTransactionTitle(
     PhabricatorApplicationTransaction $xaction) {
     $author_phid = $xaction->getAuthorPHID();
@@ -95,8 +95,10 @@ final class DifferentialReleaseBranchField
     $new = $xaction->getNewValue();
 
     return pht(
-      '%s updated the release branch for this revision.',
-      $xaction->renderHandleLink($author_phid));
+      '%s edited the release branch: "%s" became "%s".',
+      $xaction->renderHandleLink($author_phid),
+      $old,
+      $new);
   }
 
   public function getApplicationTransactionTitleForFeed(
@@ -108,9 +110,11 @@ final class DifferentialReleaseBranchField
     $new = $xaction->getNewValue();
 
     return pht(
-      '%s updated the release branch for %s.',
+      '%s edited the release branch for %s: "%s" became "%s".',
       $xaction->renderHandleLink($author_phid),
-      $xaction->renderHandleLink($object_phid));
+      $xaction->renderHandleLink($object_phid),
+      $old,
+      $new);
   }
 
   public function shouldAppearInConduitDictionary() {
@@ -124,54 +128,5 @@ final class DifferentialReleaseBranchField
   protected function newConduitEditParameterType() {
     return new ConduitStringParameterType();
   }
-
-  // Copied from phabricator/src/infrastructure/customfield/standard/PhabricatorStandardCustomFieldText.php
-
-  // public function buildFieldIndexes() {
-  //   $indexes = array();
-
-  //   $value = $this->getFieldValue();
-  //   if (strlen($value)) {
-  //     $indexes[] = $this->newStringIndex($value);
-  //   }
-
-  //   return $indexes;
-  // }
-
-  // public function readApplicationSearchValueFromRequest(
-  //   PhabricatorApplicationSearchEngine $engine,
-  //   AphrontRequest $request) {
-
-  //   return $request->getStr($this->getFieldKey());
-  // }
-
-  // public function applyApplicationSearchConstraintToQuery(
-  //   PhabricatorApplicationSearchEngine $engine,
-  //   PhabricatorCursorPagedPolicyAwareQuery $query,
-  //   $value) {
-
-  //   if (strlen($value)) {
-  //     $query->withApplicationSearchContainsConstraint(
-  //       $this->newStringIndex(null),
-  //       $value);
-  //   }
-  // }
-
-  // public function appendToApplicationSearchForm(
-  //   PhabricatorApplicationSearchEngine $engine,
-  //   AphrontFormView $form,
-  //   $value) {
-
-  //   $form->appendChild(
-  //     id(new AphrontFormTextControl())
-  //       ->setLabel($this->getFieldName())
-  //       ->setName($this->getFieldKey())
-  //       ->setValue($value));
-  // }
-
-  // public function readValueFromCommitMessage($value) {
-  //   $this->setValue($value);
-  //   return $this;
-  // }
 
 }
